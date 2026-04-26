@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, CameraPlus, Check } from "@phosphor-icons/react";
 
-import postcardExplainerImage from "../assets/figma/photo-to-postcard-card.png";
-import step4HeroImage from "../assets/figma/letter-with-bookmark.png";
-import keepsakeOfferHero from "../assets/figma/keepsake-early-offer-hero.png";
-import foundingMemberReserveHero from "../assets/figma/founding-member-reserve-hero.png";
+import customPostcardImage from "../assets/figma/custom.png";
+import letterValueHero from "../assets/figma/content-image.png";
+import keepsakeHeroImage from "../assets/figma/keepsake.png";
+import foundingMemberReserveHero from "../assets/figma/may.png";
 
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 11;
 const MAX_PHOTO_BYTES = 1024 * 1024; /* 1 MB */
 
 const AGE_OPTIONS = ["0-1 Years", "1-3 Years", "4-7 Years", "8-11 Years", "12+ Years"];
@@ -52,7 +52,24 @@ const TRAIT_OPTIONS = [
   "Curious",
 ];
 
-/* … → Keepsake offer → Founding member / reserve (finish) */
+const SPOT_TIMELINE = [
+  { id: "today", kicker: "TODAY", done: true, text: "Reserve your spot (no charge today)" },
+  {
+    id: "may1",
+    kicker: "MAY 1",
+    done: false,
+    text: "Your subscription starts — we'll send you a few questions about your month with your dog",
+  },
+  {
+    id: "eomay",
+    kicker: "END OF MAY",
+    done: false,
+    text: "Your first letter is mailed. Allow 1–2 weeks for delivery (US)",
+  },
+  { id: "after", kicker: "AFTER THAT", done: false, priceLine: true },
+];
+
+/* … → Reserve → Save My Spot / timeline (finish) */
 
 export default function OnboardingFlow({ onExit, onComplete }) {
   const [step, setStep] = useState(1);
@@ -181,6 +198,10 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
   const continueToReserve = () => {
     setStep(10);
+  };
+
+  const continueToSpotTimeline = () => {
+    setStep(11);
   };
 
   const displayName = dogName.trim() || "your dog";
@@ -333,7 +354,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
               <ArrowLeft size={20} weight="regular" className="onboard-step4-back-icon" />
             </button>
             <figure className="onboard-step4-hero" aria-hidden="false">
-              <img src={step4HeroImage} alt="A dog beside a personal letter on the sofa" />
+              <img src={letterValueHero} alt="A dog beside a personal letter on the sofa" />
             </figure>
           </div>
           <div className="onboard-step4-content">
@@ -407,7 +428,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
             </button>
             <figure className="onboard-step4-hero" aria-hidden="false">
               <img
-                src={postcardExplainerImage}
+                src={customPostcardImage}
                 alt="Your photo becomes a custom illustrated postcard of your dog"
               />
             </figure>
@@ -545,7 +566,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
             </button>
             <figure className="onboard-step4-hero" aria-hidden="false">
               <img
-                src={keepsakeOfferHero}
+                src={keepsakeHeroImage}
                 alt="Letter, illustrated postcard, and dog bookmark on a table"
               />
             </figure>
@@ -579,7 +600,14 @@ export default function OnboardingFlow({ onExit, onComplete }) {
 
       {step === 10 && (
         <>
-          <form id="onboard-step-reserve" className="onboard-main onboard-main--reserve" onSubmit={(e) => { e.preventDefault(); finishOnboarding(); }}>
+          <form
+            id="onboard-step-reserve"
+            className="onboard-main onboard-main--reserve"
+            onSubmit={(e) => {
+              e.preventDefault();
+              continueToSpotTimeline();
+            }}
+          >
             <div className="onboard-reserve-copy">
               <h1 className="onboard-title onboard-title--reserve">
                 We&apos;re writing letters for our first 100 dog lovers. We&apos;d love for you to be
@@ -602,6 +630,60 @@ export default function OnboardingFlow({ onExit, onComplete }) {
             </p>
             <button type="submit" className="onboard-continue" form="onboard-step-reserve">
               Reserve My First Letter
+              <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
+            </button>
+          </footer>
+        </>
+      )}
+
+      {step === 11 && (
+        <>
+          <div className="onboard-main onboard-main--spot-timeline">
+            <h1 className="onboard-title onboard-title--spot-timeline">
+              100 spots. Personalized to each dog. Yours is waiting.
+            </h1>
+            <ol className="onboard-timeline" role="list">
+              {SPOT_TIMELINE.map((item, index) => (
+                <li key={item.id} className="onboard-timeline-item">
+                  <div className="onboard-timeline-gutter">
+                    {item.done ? (
+                      <div className="onboard-timeline-node onboard-timeline-node--done">
+                        <Check size={14} weight="bold" className="onboard-timeline-check" aria-hidden="true" />
+                      </div>
+                    ) : (
+                      <div className="onboard-timeline-node" aria-hidden="true">
+                        <span className="onboard-timeline-dot" />
+                      </div>
+                    )}
+                    {index < SPOT_TIMELINE.length - 1 ? (
+                      <div className="onboard-timeline-stem" aria-hidden="true" />
+                    ) : null}
+                  </div>
+                  <div className="onboard-timeline-body">
+                    <p className="onboard-timeline-kicker">{item.kicker}</p>
+                    {item.priceLine ? (
+                      <p className="onboard-timeline-text">
+                        <strong className="onboard-timeline-price">$18/month</strong>
+                        <span> — cancel any time</span>
+                      </p>
+                    ) : (
+                      <p className="onboard-timeline-text">{item.text}</p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="onboard-timeline-caveat">
+              If you change your mind, cancel before May 1 and you won&apos;t be charged.
+            </p>
+          </div>
+          <footer className="onboard-footer onboard-footer--spot-timeline">
+            <p className="onboard-spot-legal">
+              You&apos;ll enter your card details securely through Stripe. By continuing, you authorize us
+              to charge $11 on May 1 unless you cancel before then.
+            </p>
+            <button type="button" className="onboard-continue" onClick={finishOnboarding}>
+              Save My Spot
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
             </button>
           </footer>

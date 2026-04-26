@@ -39,6 +39,13 @@
   --font-serif: "Lora", "Cormorant Garamond", "Times New Roman", serif;
 
   --max-page: 430px;
+
+  /* Onboarding: shared hero / image block height (Figma) */
+  --onboard-image-height: 375px;
+  /* Postcard value step — taller hero for custom.png */
+  --onboard-image-height-postcard: 460px;
+  /* Keepsake value step — taller hero for keepsake.png */
+  --onboard-image-height-keepsake: 460px;
 }
 
 * {
@@ -1008,7 +1015,12 @@ a {
 }
 
 .onboard-photo-drop:has(.onboard-photo-preview-wrap) {
-  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  min-height: var(--onboard-image-height);
+  height: var(--onboard-image-height);
   padding: 0;
   border-style: solid;
   border-color: #e0d5c8;
@@ -1020,19 +1032,24 @@ a {
 }
 
 .onboard-photo-preview-wrap {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
   width: 100%;
-  min-height: 200px;
-  max-height: min(50vh, 360px);
+  height: var(--onboard-image-height);
+  min-height: 0;
 }
 
 .onboard-photo-preview {
   display: block;
+  align-self: stretch;
   width: 100%;
   height: 100%;
-  min-height: 200px;
-  max-height: min(50vh, 360px);
+  min-height: 0;
+  flex: 1 0 auto;
   object-fit: cover;
+  object-position: center;
 }
 
 .onboard-photo-drop-inner {
@@ -1093,8 +1110,15 @@ a {
 }
 
 .onboard-reserve-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  flex: 0 0 var(--onboard-image-height);
   margin: 0;
   width: 100%;
+  min-height: var(--onboard-image-height);
+  height: var(--onboard-image-height);
   border-radius: 20px;
   overflow: hidden;
   flex-shrink: 0;
@@ -1102,8 +1126,13 @@ a {
 
 .onboard-reserve-visual img {
   display: block;
+  align-self: stretch;
   width: 100%;
-  height: auto;
+  height: 100%;
+  min-height: 100%;
+  min-width: 0;
+  object-fit: cover;
+  object-position: center;
 }
 
 .onboard-footer--reserve {
@@ -1123,6 +1152,149 @@ a {
   font-weight: 500;
   color: #6b635c;
   letter-spacing: -0.2px;
+}
+
+/* Save My Spot — vertical timeline (final step) */
+.onboard-main--spot-timeline {
+  gap: var(--space-5);
+  padding-top: var(--space-1);
+}
+
+.onboard-title--spot-timeline {
+  font-size: 26px;
+  line-height: 1.3;
+  letter-spacing: -0.65px;
+}
+
+.onboard-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.onboard-timeline-item {
+  display: flex;
+  gap: var(--space-4);
+  align-items: stretch;
+  min-width: 0;
+}
+
+.onboard-timeline-gutter {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 32px;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.onboard-timeline-node {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 2px solid #e0d5c8;
+  background: #f3ece4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.onboard-timeline-node--done {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: #c56740;
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.onboard-timeline-check {
+  display: block;
+}
+
+.onboard-timeline-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #5c4b3d;
+}
+
+.onboard-timeline-stem {
+  width: 2px;
+  flex: 1;
+  min-height: 8px;
+  margin: 4px 0;
+  background: #e0d5c8;
+  border-radius: 1px;
+}
+
+.onboard-timeline-body {
+  flex: 1;
+  min-width: 0;
+  padding-bottom: var(--space-5);
+}
+
+.onboard-timeline-item:last-child .onboard-timeline-body {
+  padding-bottom: 0;
+}
+
+.onboard-timeline-kicker {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  color: #6b635c;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.onboard-timeline-text {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: #1c1c19;
+  letter-spacing: -0.2px;
+  text-align: left;
+}
+
+.onboard-timeline-price {
+  font-weight: 700;
+}
+
+.onboard-timeline-caveat {
+  margin: 0;
+  margin-top: var(--space-2);
+  text-align: center;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #8e8377;
+}
+
+.onboard-footer--spot-timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-4);
+  padding-top: var(--space-2);
+}
+
+.onboard-spot-legal {
+  margin: 0;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #8e8377;
+  letter-spacing: -0.1px;
 }
 
 /* Step 4 — letter value prop (hero edge-to-edge top; back over image) */
@@ -1148,10 +1320,23 @@ a {
 
 .onboard-step4--postcard .onboard-step4-hero {
   background: #efe8dc;
+  flex: 0 0 var(--onboard-image-height-postcard);
+  min-height: var(--onboard-image-height-postcard);
+  height: var(--onboard-image-height-postcard);
+}
+
+.onboard-step4--keepsake .onboard-step4-hero {
+  flex: 0 0 var(--onboard-image-height-keepsake);
+  min-height: var(--onboard-image-height-keepsake);
+  height: var(--onboard-image-height-keepsake);
 }
 
 .onboard-step4-hero-wrap {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
   width: 100%;
   flex-shrink: 0;
   margin: 0;
@@ -1192,18 +1377,25 @@ a {
 }
 
 .onboard-step4-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  flex: 0 0 var(--onboard-image-height);
   margin: 0;
   width: 100%;
-  min-height: 200px;
-  max-height: 44vh;
-  height: 40vh;
+  min-height: var(--onboard-image-height);
+  height: var(--onboard-image-height);
   overflow: hidden;
 }
 
 .onboard-step4-hero img {
   display: block;
+  align-self: stretch;
   width: 100%;
   height: 100%;
+  min-height: 100%;
+  min-width: 0;
   object-fit: cover;
   object-position: center;
 }
