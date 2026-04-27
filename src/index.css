@@ -1095,24 +1095,37 @@ a {
 .onboard-main--reserve {
   gap: var(--space-5);
   padding-top: var(--space-2);
+  align-items: center;
+  text-align: center;
 }
 
 .onboard-reserve-copy {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-3);
+  width: 100%;
+  max-width: 26rem;
+  margin-inline: auto;
+  text-align: center;
 }
 
 .onboard-title--reserve {
   font-size: 26px;
   line-height: 1.3;
   letter-spacing: -0.7px;
+  text-align: center;
+}
+
+.onboard-lede--reserve {
+  text-align: center;
+  max-width: none;
 }
 
 .onboard-reserve-visual {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   align-self: stretch;
   flex: 0 0 var(--onboard-image-height);
   margin: 0;
@@ -1156,23 +1169,33 @@ a {
 
 /* Save My Spot — vertical timeline (final step) */
 .onboard-main--spot-timeline {
+  align-items: center;
   gap: var(--space-5);
   padding-top: var(--space-1);
+  text-align: center;
 }
 
 .onboard-title--spot-timeline {
+  width: 100%;
+  max-width: 24rem;
+  margin-inline: auto;
   font-size: 26px;
   line-height: 1.3;
   letter-spacing: -0.65px;
+  text-align: center;
 }
 
 .onboard-timeline {
   list-style: none;
+  width: 100%;
+  max-width: 30rem;
   margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0;
+  align-self: center;
+  text-align: left;
 }
 
 .onboard-timeline-item {
@@ -1249,9 +1272,13 @@ a {
   font-weight: 700;
   letter-spacing: 0.08em;
   line-height: 1.2;
-  color: #6b635c;
+  color: #5c4b3d;
   text-align: left;
   text-transform: uppercase;
+}
+
+.onboard-timeline-kicker--active {
+  color: #c56740;
 }
 
 .onboard-timeline-text {
@@ -1265,36 +1292,12 @@ a {
   text-align: left;
 }
 
-.onboard-timeline-price {
-  font-weight: 700;
-}
-
-.onboard-timeline-caveat {
-  margin: 0;
-  margin-top: var(--space-2);
-  text-align: center;
-  font-size: 14px;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #8e8377;
-}
-
 .onboard-footer--spot-timeline {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: var(--space-4);
   padding-top: var(--space-2);
-}
-
-.onboard-spot-legal {
-  margin: 0;
-  text-align: center;
-  font-size: 12px;
-  line-height: 1.5;
-  font-weight: 400;
-  color: #8e8377;
-  letter-spacing: -0.1px;
 }
 
 /* Step 4 — letter value prop (hero edge-to-edge top; back over image) */

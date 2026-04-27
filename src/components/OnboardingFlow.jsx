@@ -4,10 +4,13 @@ import { ArrowLeft, ArrowRight, CameraPlus, Check } from "@phosphor-icons/react"
 import customPostcardImage from "../assets/figma/custom.png";
 import letterValueHero from "../assets/figma/content-image.png";
 import keepsakeHeroImage from "../assets/figma/keepsake.png";
-import foundingMemberReserveHero from "../assets/figma/may.png";
+/* Hero for step 10 only — “Reserve My First Letter” (not timeline / Save My Spot) */
+import reserveMyFirstLetterHero from "../assets/figma/desktop 1.jpeg";
+
+const STRIPE_PAYMENT_LINK = import.meta.env.VITE_STRIPE_PAYMENT_LINK?.trim() || "";
 
 const TOTAL_STEPS = 11;
-const MAX_PHOTO_BYTES = 1024 * 1024; /* 1 MB */
+const MAX_PHOTO_BYTES = 5 * 1024 * 1024; /* 5 MB */
 
 const AGE_OPTIONS = ["0-1 Years", "1-3 Years", "4-7 Years", "8-11 Years", "12+ Years"];
 
@@ -53,20 +56,25 @@ const TRAIT_OPTIONS = [
 ];
 
 const SPOT_TIMELINE = [
-  { id: "today", kicker: "TODAY", done: true, text: "Reserve your spot (no charge today)" },
   {
-    id: "may1",
-    kicker: "MAY 1",
+    id: "today",
+    kicker: "TODAY",
+    done: true,
+    text: "Pay $11 to reserve your first letter and custom portrait",
+  },
+  {
+    id: "midmay",
+    kicker: "MID MAY",
     done: false,
-    text: "Your subscription starts — we'll send you a few questions about your month with your dog",
+    text: "We send you a few questions about your month with your dog",
   },
   {
     id: "eomay",
     kicker: "END OF MAY",
     done: false,
-    text: "Your first letter is mailed. Allow 1–2 weeks for delivery (US)",
+    text: "Your first letter is mailed. Allow 1-2 weeks for delivery (US)",
   },
-  { id: "after", kicker: "AFTER THAT", done: false, priceLine: true },
+  { id: "after", kicker: "AFTER THAT", done: false, text: "$18/month — cancel any time" },
 ];
 
 /* … → Reserve → Save My Spot / timeline (finish) */
@@ -153,7 +161,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
       return;
     }
     if (file.size > MAX_PHOTO_BYTES) {
-      setPhotoError("Please choose an image under 1 MB.");
+      setPhotoError("Please choose an image under 5 MB.");
       return;
     }
     const lower = file.name.toLowerCase();
@@ -183,16 +191,21 @@ export default function OnboardingFlow({ onExit, onComplete }) {
   };
 
   const finishOnboarding = () => {
+    const payload = {
+      dogName: dogName.trim(),
+      breed: breed.trim(),
+      ageRange,
+      traits: [...traits],
+      memorableMoment,
+      photo: photoFile,
+      photoName: photoFile?.name,
+    };
+    if (STRIPE_PAYMENT_LINK) {
+      window.location.assign(STRIPE_PAYMENT_LINK);
+      return;
+    }
     if (typeof onComplete === "function") {
-      onComplete({
-        dogName: dogName.trim(),
-        breed: breed.trim(),
-        ageRange,
-        traits: [...traits],
-        memorableMoment,
-        photo: photoFile,
-        photoName: photoFile?.name,
-      });
+      onComplete(payload);
     }
   };
 
@@ -486,7 +499,7 @@ export default function OnboardingFlow({ onExit, onComplete }) {
               <span className="onboard-photo-drop-inner">
                 <CameraPlus className="onboard-photo-icon" size={40} weight="duotone" aria-hidden="true" />
                 <span className="onboard-photo-tap">Tap to Upload</span>
-                <span className="onboard-photo-hint">JPG, JPEG, PNG less than 1MB</span>
+                <span className="onboard-photo-hint">JPG, JPEG, PNG less than 5MB</span>
               </span>
             </label>
             {photoError ? <p className="onboard-photo-error">{photoError}</p> : null}
@@ -610,24 +623,20 @@ export default function OnboardingFlow({ onExit, onComplete }) {
           >
             <div className="onboard-reserve-copy">
               <h1 className="onboard-title onboard-title--reserve">
-                We&apos;re writing letters for our first 100 dog lovers. We&apos;d love for you to be
-                one of them.
+                We&apos;re writing letters for our first 100 dog moms. We&apos;d love for you to be one of them.
               </h1>
-              <p className="onboard-lede">
-                No payment today. Just reserve your first letter with your card.
-              </p>
             </div>
             <figure className="onboard-reserve-visual" aria-hidden="false">
               <img
-                src={foundingMemberReserveHero}
-                alt="Letter, bookmark, and illustrated postcard of your dog"
+                src={reserveMyFirstLetterHero}
+                alt="Handwritten letter, custom dog portrait, and letter materials on a desk"
               />
             </figure>
+            <p className="onboard-reserve-pricing">
+              Reserve your first letter and custom portrait for just $11.
+            </p>
           </form>
           <footer className="onboard-footer onboard-footer--reserve">
-            <p className="onboard-reserve-pricing">
-              As a founding member, your first letter is just $11, then $18/month. Cancel any time.
-            </p>
             <button type="submit" className="onboard-continue" form="onboard-step-reserve">
               Reserve My First Letter
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
@@ -660,28 +669,22 @@ export default function OnboardingFlow({ onExit, onComplete }) {
                     ) : null}
                   </div>
                   <div className="onboard-timeline-body">
-                    <p className="onboard-timeline-kicker">{item.kicker}</p>
-                    {item.priceLine ? (
-                      <p className="onboard-timeline-text">
-                        <strong className="onboard-timeline-price">$18/month</strong>
-                        <span> — cancel any time</span>
-                      </p>
-                    ) : (
-                      <p className="onboard-timeline-text">{item.text}</p>
-                    )}
+                    <p
+                      className={
+                        item.done
+                          ? "onboard-timeline-kicker onboard-timeline-kicker--active"
+                          : "onboard-timeline-kicker"
+                      }
+                    >
+                      {item.kicker}
+                    </p>
+                    <p className="onboard-timeline-text">{item.text}</p>
                   </div>
                 </li>
               ))}
             </ol>
-            <p className="onboard-timeline-caveat">
-              If you change your mind, cancel before May 1 and you won&apos;t be charged.
-            </p>
           </div>
           <footer className="onboard-footer onboard-footer--spot-timeline">
-            <p className="onboard-spot-legal">
-              You&apos;ll enter your card details securely through Stripe. By continuing, you authorize us
-              to charge $11 on May 1 unless you cancel before then.
-            </p>
             <button type="button" className="onboard-continue" onClick={finishOnboarding}>
               Save My Spot
               <ArrowRight size={18} weight="bold" className="onboard-continue-icon" />
